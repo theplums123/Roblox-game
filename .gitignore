@@ -1,0 +1,33 @@
+# Roblox Studio Files
+*.rbxl.lock
+*.rbxlx.lock
+
+# Roblox Studio Backups
+*.backup.*
+
+# Temporary Files
+*.tmp
+*.temp
+*~
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node.js (if using any tooling)
+node_modules/
+npm-debug.log*
+
+# Output directories
+build/
+dist/
+out/
