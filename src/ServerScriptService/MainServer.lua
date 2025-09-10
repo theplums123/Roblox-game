@@ -16,6 +16,8 @@ local Utilities = require(ReplicatedStorage.Modules:WaitForChild("Utilities"))
 local ParticleEffects = require(ReplicatedStorage.Modules:WaitForChild("ParticleEffects"))
 local SoundManager = require(ReplicatedStorage.Modules:WaitForChild("SoundManager"))
 local PlayerDataManager = require(ServerStorage:WaitForChild("PlayerDataManager"))
+local PerformanceMonitor = require(ServerStorage:WaitForChild("PerformanceMonitor"))
+local AdminCommands = require(ServerStorage:WaitForChild("AdminCommands"))
 
 -- Game state
 local playerData = {}
@@ -26,6 +28,12 @@ local gameStartTime = tick()
 
 -- Initialize sound system
 SoundManager.initialize()
+
+-- Initialize performance monitoring
+PerformanceMonitor.initialize()
+
+-- Initialize admin commands
+AdminCommands.initialize()
 
 -- Initialize game world
 local function setupGameWorld()
@@ -278,12 +286,16 @@ local function ambientEffectsLoop()
     while gameRunning do
         wait(math.random(5, 15)) -- Random interval between effects
         
-        -- Create ambient sparkles around the map
-        local centerPos = Vector3.new(0, 20, 0)
-        local mapSize = Configuration.MAP_SIZE - 40
-        local randomPos = Utilities.randomVector3InRegion(centerPos, mapSize)
-        
-        ParticleEffects.createAmbientEffect(randomPos, "sparkle")
+        -- Only create effects if performance is good
+        local perfData = PerformanceMonitor.getPerformanceData()
+        if perfData.frameRate > 40 then
+            -- Create ambient sparkles around the map
+            local centerPos = Vector3.new(0, 20, 0)
+            local mapSize = Configuration.MAP_SIZE - 40
+            local randomPos = Utilities.randomVector3InRegion(centerPos, mapSize)
+            
+            ParticleEffects.createAmbientEffect(randomPos, "sparkle")
+        end
     end
 end
 
@@ -378,10 +390,29 @@ setupGameWorld()
 -- Start background music
 SoundManager.playMusic(true)
 
+-- Performance monitoring loop
+local function performanceLoop()
+    while gameRunning do
+        wait(30) -- Check every 30 seconds
+        
+        if Configuration.DEBUG_MODE then
+            local report = PerformanceMonitor.getPerformanceReport()
+            print(report)
+        end
+        
+        -- Auto-optimize if needed
+        local optimizations = PerformanceMonitor.autoOptimize()
+        
+        -- Check for emergency mode
+        PerformanceMonitor.checkEmergencyMode()
+    end
+end
+
 -- Start the game loops
 spawn(gameLoop)
 spawn(autoSaveLoop)
 spawn(ambientEffectsLoop)
+spawn(performanceLoop)
 
 print("Coin Collector server started! Version:", Configuration.GAME_VERSION)
 print("Features enabled:")
