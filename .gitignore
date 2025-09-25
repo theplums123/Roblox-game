@@ -1,0 +1,28 @@
+# Roblox Studio temporary files
+*.rbxl.lock
+*.rbxlx.lock
+
+# Roblox Studio backup files
+*.rbxl.bak
+*.rbxlx.bak
+
+# Build artifacts
+/build/
+/dist/
+
+# Temporary files
+/tmp/
+*.tmp
+*.temp
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
